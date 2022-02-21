@@ -1,6 +1,6 @@
 # sample
 
-A new Flutter project.
+Fullter news Demo
 
 ## Getting Started
 
