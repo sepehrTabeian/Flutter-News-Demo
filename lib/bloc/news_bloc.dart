@@ -1,3 +1,4 @@
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sample/bloc/news_event.dart';
 import 'package:sample/bloc/news_state.dart';
@@ -10,22 +11,20 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   NewsBloc({required NewsRepository movieRepository})
       : _repository = movieRepository,
-        super(InitialNews());
-
-
-  @override
-  Stream<NewsState> mapEventToState(NewsEvent event)async* {
-
-    if(event is FetchNews){
-      try{
-        yield LoadingNews();
-        NewsModel model= await _repository.getNews();
-        yield LoadedNews(newsModel: model);
-
-      }catch(e){
-        yield FailedNews(message: errorTitle);
-      }
-
-    }
+        super(InitialNews()){
+    on<FetchNews>(
+        _fetchNews
+    );
   }
+ Future<void> _fetchNews(FetchNews event  , Emitter<NewsState> emit) async {
+   emit(LoadingNews());
+   try {
+     NewsModel newsModel = await _repository.getNews();
+     emit(LoadedNews(newsModel: newsModel));
+
+   }catch(e){
+     emit(FailedNews(message: errorTitle));
+
+   }
+ }
 }
